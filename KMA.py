@@ -1,5 +1,6 @@
 import subprocess, threading
 import time, os
+from datetime import datetime
 from typing import List
 
 logDir="./var/log/KMA"
@@ -17,9 +18,13 @@ class subprocessWrapper:
         self.runInBackground = runInBackground
         self.thread = None
         self.calls = 0
-        self.stdout = open(logDir+'/'+self.args[0]+".log", "w+")
-        self.stderr = open(logDir+'/'+self.args[0]+".log", "w+")
+        self.stdout = open(logDir+'/'+self.args[0]+".log", "w")
+        self.stderr = open(logDir+'/'+self.args[0]+".err", "w")
         self.ready = True
+
+    def __del__(self):
+        self.stderr.close()
+        self.stdout.close()
 
     def switchRunInBackground(self):
         self.runInBackground = not self.runInBackground
@@ -37,7 +42,6 @@ class subprocessWrapper:
         self.process = subprocess.run(self.args)
 
     def autorun(self):
-        print(self.trigger)
         if self.trigger is None:
             print("Trigger undefined. Running once and waiting for completion.")
             self.run()
@@ -46,6 +50,10 @@ class subprocessWrapper:
             print("Trigger defined.")
             while self.trigger():
                 self.calls+=1
+                self.stdout.write("+++ call {} {}+++\n".format(self.calls, datetime.now().strftime("%m/%d/%Y, %H:%M:%S")))
+                self.stdout.flush()
+                self.stderr.write("+++ call {} {}+++\n".format(self.calls, datetime.now().strftime("%m/%d/%Y, %H:%M:%S")))
+                self.stderr.flush()
                 print("Running call {} and waiting {} seconds.".format(self.calls, self.pollingInterval))
                 self.run()
                 time.sleep(self.pollingInterval)
@@ -54,10 +62,8 @@ class subprocessWrapper:
 
     def is_alive(self):
         try:
-            print("Main process running.")
-            return self.thread.is_alive()
+            return self.thread.is_alive() or self.ready
         except:
-            print("Main process ready.")
             return self.ready
 
 
