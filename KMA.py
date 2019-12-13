@@ -1,7 +1,10 @@
+#!/usr/bin/python
+
 import subprocess, threading
 import time, os
 from datetime import datetime
 from typing import List
+import argparse
 
 logDir="./var/log/KMA"
 try:
@@ -75,11 +78,17 @@ def main(mainExecutable: subprocessWrapper, sideExecutables:  List[subprocessWra
         mainExecutable.switchRunInBackground()
     mainExecutable.autorun()
 
-    
-
 
 if __name__ == "__main__":
-    mainExe = subprocessWrapper("bash test_script.sh")
-    sideExes = [subprocessWrapper("ls", mainExe.is_alive, 1, True)]
+    parser = argparse.ArgumentParser(description='KMA is a command wrapper able to maintain satellite processes as long as the main process is alive.')
+    parser.add_argument("--m", required=True, type=str, help="Provide the main process launch command as a string (surrounded by '').")
+    parser.add_argument("--s", type=str, help="Provide comma separed launch commands for the satellite processes.")
+
+    args = parser.parse_args()
+
+    print(args)
+
+    mainExe = subprocessWrapper(args.m)
+    sideExes = map(lambda x: subprocessWrapper(x, mainExe.is_alive, 1, True), args.s.split(','))
     
     main(mainExe, sideExes)
