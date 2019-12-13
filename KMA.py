@@ -1,8 +1,12 @@
-import subprocess, threading
-import time, os, sys
+#! /usr/bin/env python3
+
+import sys
+if sys.version_info[0] < 3:
+    raise Exception("Must be using Python 3")
+
+import subprocess, threading, time, os, argparse
 from datetime import datetime
 from typing import List
-import argparse
 from argparse import RawTextHelpFormatter
 
 logDir="./var/log/KMA"
@@ -78,7 +82,7 @@ class subprocessWrapper:
             return self.ready
 
 
-def main(mainExecutable: subprocessWrapper, sideExecutables:  List[subprocessWrapper]):
+def main(mainExecutable, sideExecutables):
     for exe in sideExecutables:
         threading.Thread(target=exe.autorun).start()
     
