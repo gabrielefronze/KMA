@@ -99,10 +99,14 @@ def makeWrapper(x):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='KMA is a command wrapper able to maintain satellite processes as long as the main process is alive.', formatter_class=RawTextHelpFormatter)
-    parser.add_argument("-m", "--main", required=True, type=str, help="Provide the main process launch command as a string (surrounded by '').\n\n\te.g. --m 'sleep 10'\n\n")
-    parser.add_argument("-s", "--satellites", type=str, help="Provide comma separed launch commands for the satellite processes as strings \n(surrounded by ''). Optional: add polling interval in seconds after ':'.\n\n\te.g. --s 'ls:5' <-- run ls every 5 seconds\n\te.g. --s 'ls:5, pwd' <-- run ls every 5 seconds and pwd every second\n\te.g. --s 'ls:5, pwd:10' <-- run ls every 5 seconds and pwd every 10 seconds\n\n")
+
+    parser.add_argument("-s", "--satellites", type=str, help="Provide comma separed launch commands for the satellite processes as strings \n(surrounded by ''). Optional: add polling interval in seconds after ':'.\n\n\te.g. -s 'ls:5' <-- run ls every 5 seconds\n\te.g. -s 'ls:5, pwd' <-- run ls every 5 seconds and pwd every second\n\te.g. -s 'ls:5, pwd:10' <-- run ls every 5 seconds and pwd every 10 seconds\n\n")
+
     parser.add_argument("-l", "--logdir", type=str, help="Optional logdir. Default '{}'.\n\n".format(logDir))
+
     parser.add_argument("-v", "--verbose", action='store_true', help="Enable verbose output.\n\n")
+
+    parser.add_argument("main", type=str, help="Provide the main process launch command as a string (surrounded by '').\n\n\te.g. python KMA.py sleep 10\n\te.g. python KMA.py ./test_script.sh\n\n")
 
     args = parser.parse_args()
 
@@ -115,6 +119,9 @@ if __name__ == "__main__":
     setLogDir()
 
     mainExe = subprocessWrapper(args.main)
-    sideExes = map(lambda x: makeWrapper(x), args.satellites.split(','))
-    
-    main(mainExe, sideExes)
+
+    if args.satellites:
+        sideExes = map(lambda x: makeWrapper(x), args.satellites.split(','))
+        main(mainExe, sideExes)
+    else:
+        main(mainExe, [])
