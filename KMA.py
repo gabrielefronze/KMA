@@ -90,9 +90,9 @@ def main(mainExecutable: subprocessWrapper, sideExecutables:  List[subprocessWra
         mainExecutable.runOnTop()
 
 def makeWrapper(x, trigger):
-    if ':' in x:
-        y=x.split(':')
-        return subprocessWrapper(y[0], trigger, int(y[1]), True)
+    if ' @ ' in x:
+        y=x.split(' @ ')
+        return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True)
     else:
         return subprocessWrapper(x, trigger, 1, True)
 
@@ -100,7 +100,7 @@ def makeWrapper(x, trigger):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='KMA is a command wrapper able to maintain satellite processes as long as the main process is alive.', formatter_class=RawTextHelpFormatter)
 
-    parser.add_argument("-s", "--satellites", type=str, help="Provide comma separed launch commands for the satellite processes as strings.\n\Optional: add polling interval in seconds after ':'.\n\n\te.g. -s ls <-- run ls every second\n\te.g. -s ls:5,pwd <-- run ls every 5 seconds and pwd every second\n\te.g. -s ls:5,pwd:10 <-- run ls every 5 seconds and pwd every 10 seconds\n\n")
+    parser.add_argument("-s", "--satellites", type=str, help="Provide comma separed launch commands for the satellite processes as strings.\n\Optional: add polling interval in seconds after ' @ '.\n\n\te.g. -s ls <-- run ls every second\n\te.g. -s 'ls @ 5,pwd' <-- run ls every 5 seconds and pwd every second\n\te.g. -s 'ls @ 5, pwd @ 10' <-- run ls every 5 seconds and pwd every 10 seconds\n\n")
 
     parser.add_argument("-l", "--logdir", type=str, help="Optional logdir. Default '{}'.\n\n".format(logDir))
 
