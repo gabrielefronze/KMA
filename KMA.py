@@ -89,12 +89,12 @@ def main(mainExecutable: subprocessWrapper, sideExecutables:  List[subprocessWra
     else:
         mainExecutable.runOnTop()
 
-def makeWrapper(x):
+def makeWrapper(x, trigger):
     if ':' in x:
         y=x.split(':')
-        return subprocessWrapper(y[0], mainExe.is_alive, int(y[1]), True)
+        return subprocessWrapper(y[0], trigger, int(y[1]), True)
     else:
-        return subprocessWrapper(x, mainExe.is_alive, 1, True)
+        return subprocessWrapper(x, trigger, 1, True)
 
 
 if __name__ == "__main__":
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     mainExe = subprocessWrapper(args.main)
 
     if args.satellites:
-        sideExes = map(lambda x: makeWrapper(x), args.satellites.split(','))
+        sideExes = map(lambda x: makeWrapper(x, mainExe.is_alive), args.satellites.split(','))
         main(mainExe, sideExes)
     else:
         main(mainExe, [])
