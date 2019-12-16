@@ -16,9 +16,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.name:
-        mainExe = KMA.subprocessWrapper(args.main, customName = "pipeline")
+        mainExe = KMA.makeWrapper(args.main, customName = "pipeline")
     else:
-        mainExe = KMA.subprocessWrapper(args.main, customName = args.name)
+        mainExe = KMA.makeWrapper(args.main, customName = args.name)
 
     if args.voms:
         sideExes = [KMA.makeWrapper("echo {} | myproxy-logon -d -S --voms {} -t 48 @ 172700".format(args.passw, args.voms), mainExe.is_alive, customName = "myproxy-logon")]

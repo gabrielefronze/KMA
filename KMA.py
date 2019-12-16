@@ -103,14 +103,20 @@ def main(mainExecutable, sideExecutables):
     else:
         mainExecutable.runOnTop()
 
-def makeWrapper(x, trigger, customName = None):
+def makeWrapper(x, trigger = None, customName = None):
     if ' @ ' in x:
         y=x.split(' @ ')
+        print("Command '{}' to be run every {} seconds.".format(y[0],y[1]))
         if customName:
             return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, customName = customName)
         else:
             return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True)
     else:
+        if trigger:
+            print("Command '{}' to be run every second.".format(x))
+        else:
+            print("Command '{}' to be run as main process.".format(x))
+
         if customName:
             return subprocessWrapper(x, trigger, 1, True, customName = customName)
         else:
