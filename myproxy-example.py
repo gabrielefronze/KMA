@@ -21,9 +21,9 @@ if __name__ == "__main__":
         mainExe = KMA.makeWrapper(args.main, customName = args.name)
 
     if args.voms:
-        sideExes = [KMA.makeWrapper("echo {} | myproxy-logon -d -S --voms {} -t 48 @ 172700".format(args.passw, args.voms), mainExe.is_alive, customName = "myproxy-logon")]
+        sideExes = [KMA.makeWrapper("echo {} | myproxy-logon -d -S --voms {} -t 1 @ 3400".format(args.passw, args.voms), mainExe.is_alive, customName = "myproxy-logon")]
     else:
-        sideExes = [KMA.makeWrapper("echo {} | myproxy-logon -d -S -t 48 @ 172700".format(args.passw), mainExe.is_alive, customName = "myproxy-logon")]
+        sideExes = [KMA.makeWrapper("echo {} | myproxy-logon -d -S -t 1 @ 3400".format(args.passw), mainExe.is_alive, customName = "myproxy-logon")]
 
     KMA.main(mainExe, sideExes)
     
