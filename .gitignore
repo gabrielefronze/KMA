@@ -2,3 +2,7 @@
 var/
 
 .vscode/
+
+__pycache__/
+
+KMA-logs/
