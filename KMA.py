@@ -75,7 +75,10 @@ class subprocessWrapper:
                 if verbose:
                     print("Running call {} and waiting {} seconds.".format(self.calls, self.pollingInterval))
                 self.run()
-                time.sleep(self.pollingInterval)
+                for seconds in range(0,self.pollingInterval):
+                    time.sleep(1)
+                    if not self.trigger():
+                        break
             if verbose:
                 print("Main process ended, stopping.")
             self.ready = False
@@ -88,8 +91,10 @@ class subprocessWrapper:
 
 
 def main(mainExecutable, sideExecutables):
+    threads = []
     for exe in sideExecutables:
-        threading.Thread(target=exe.autorun).start()
+        threads.append(threading.Thread(target=exe.autorun))
+        threads[-1].start()
     
     if verbose:
         if mainExecutable.runInBackground == True:
