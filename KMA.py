@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import List
 from argparse import RawTextHelpFormatter
 
-logDir="./var/log/KMA"
+logDir="./var/log/KMA/"
 def setLogDir():
     try:
         os.stat(logDir)
@@ -28,11 +28,11 @@ class subprocessWrapper:
         self.thread = None
         self.calls = 0
         if not customName:
-            self.stdout = open(logDir+'/'+self.args[0]+".kma.log", "w")
-            self.stderr = open(logDir+'/'+self.args[0]+".kma.err", "w")
+            self.stdout = open(logDir+self.args[0]+".kma.log", "w")
+            self.stderr = open(logDir+self.args[0]+".kma.err", "w")
         else:
-            self.stdout = open(logDir+'/'+customName+".kma.log", "w")
-            self.stderr = open(logDir+'/'+customName+".kma.err", "w")
+            self.stdout = open(logDir+customName+".kma.log", "w")
+            self.stderr = open(logDir+customName+".kma.err", "w")
         self.ready = True
 
     def __del__(self):
