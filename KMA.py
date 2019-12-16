@@ -28,11 +28,11 @@ class subprocessWrapper:
         self.thread = None
         self.calls = 0
         if not customName:
-            self.stdout = open(logDir+'/'+self.args[0]+".log", "w")
-            self.stderr = open(logDir+'/'+self.args[0]+".err", "w")
+            self.stdout = open(logDir+'/'+self.args[0]+".kma.log", "w")
+            self.stderr = open(logDir+'/'+self.args[0]+".kma.err", "w")
         else:
-            self.stdout = open(logDir+'/'+customName+".log", "w")
-            self.stderr = open(logDir+'/'+customName+".err", "w")
+            self.stdout = open(logDir+'/'+customName+".kma.log", "w")
+            self.stderr = open(logDir+'/'+customName+".kma.err", "w")
         self.ready = True
 
     def __del__(self):

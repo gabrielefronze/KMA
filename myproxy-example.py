@@ -3,7 +3,7 @@
 import argparse
 import KMA
 
-KMA.logDir="./KMA-logs"
+KMA.logDir="./"
 KMA.setLogDir()
 
 if __name__ == "__main__":
