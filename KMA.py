@@ -15,10 +15,11 @@ def setLogDir():
         os.stat(logDir)
     except:
         os.makedirs(logDir)
+
 verbose=False
 
 class subprocessWrapper:
-    def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False):
+    def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName = None):
         self.args = executableString.split()
         self.process = None
         self.trigger = trigger
@@ -26,8 +27,12 @@ class subprocessWrapper:
         self.runInBackground = runInBackground
         self.thread = None
         self.calls = 0
-        self.stdout = open(logDir+'/'+self.args[0]+".log", "w")
-        self.stderr = open(logDir+'/'+self.args[0]+".err", "w")
+        if not customName:
+            self.stdout = open(logDir+'/'+self.args[0]+".log", "w")
+            self.stderr = open(logDir+'/'+self.args[0]+".err", "w")
+        else:
+            self.stdout = open(logDir+'/'+customName+".log", "w")
+            self.stderr = open(logDir+'/'+customName+".err", "w")
         self.ready = True
 
     def __del__(self):
@@ -93,12 +98,18 @@ def main(mainExecutable, sideExecutables):
     else:
         mainExecutable.runOnTop()
 
-def makeWrapper(x, trigger):
+def makeWrapper(x, trigger, customName = None):
     if ' @ ' in x:
         y=x.split(' @ ')
-        return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True)
+        if customName:
+            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, customName = customName)
+        else:
+            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True)
     else:
-        return subprocessWrapper(x, trigger, 1, True)
+        if customName:
+            return subprocessWrapper(x, trigger, 1, True, customName = customName)
+        else:
+            return subprocessWrapper(x, trigger, 1, True)
 
 
 if __name__ == "__main__":
