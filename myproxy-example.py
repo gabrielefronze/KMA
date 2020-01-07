@@ -1,10 +1,10 @@
 #! /usr/bin/env python3
 
 import argparse
-import KMA
+import satellite
 
-KMA.logDir="./"
-KMA.setLogDir()
+satellite.logDir="./"
+satellite.setLogDir()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='This is a process wrapper wich adds a myproxy retrieval satellite by default.')
@@ -16,15 +16,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.name:
-        mainExe = KMA.makeWrapper(args.main, customName = "pipeline")
+        mainExe = satellite.makeWrapper(args.main, customName = "pipeline")
     else:
-        mainExe = KMA.makeWrapper(args.main, customName = args.name)
+        mainExe = satellite.makeWrapper(args.main, customName = args.name)
 
     if args.voms:
-        sideExes = [KMA.makeWrapper("echo {} | myproxy-logon -d -S --voms {} -t 1 @ 3400".format(args.passw, args.voms), mainExe.is_alive, customName = "myproxy-logon")]
+        sideExes = [satellite.makeWrapper("echo {} | myproxy-logon -d -S --voms {} -t 1 @ 3400".format(args.passw, args.voms), mainExe.is_alive, customName = "myproxy-logon")]
     else:
-        sideExes = [KMA.makeWrapper("echo {} | myproxy-logon -d -S -t 1 @ 3400".format(args.passw), mainExe.is_alive, customName = "myproxy-logon")]
+        sideExes = [satellite.makeWrapper("echo {} | myproxy-logon -d -S -t 1 @ 3400".format(args.passw), mainExe.is_alive, customName = "myproxy-logon")]
 
-    KMA.main(mainExe, sideExes)
+    satellite.main(mainExe, sideExes)
     
     

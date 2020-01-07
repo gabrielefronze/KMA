@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import List
 from argparse import RawTextHelpFormatter
 
-logDir="./var/log/KMA/"
+logDir="./var/log/satellite/"
 def setLogDir():
     try:
         os.stat(logDir)
@@ -28,11 +28,11 @@ class subprocessWrapper:
         self.thread = None
         self.calls = 0
         if not customName:
-            self.stdout = open(logDir+self.args[0]+".kma.log", "w")
-            self.stderr = open(logDir+self.args[0]+".kma.err", "w")
+            self.stdout = open(logDir+self.args[0]+".satellite.log", "w")
+            self.stderr = open(logDir+self.args[0]+".satellite.err", "w")
         else:
-            self.stdout = open(logDir+customName+".kma.log", "w")
-            self.stderr = open(logDir+customName+".kma.err", "w")
+            self.stdout = open(logDir+customName+".satellite.log", "w")
+            self.stderr = open(logDir+customName+".satellite.err", "w")
         self.ready = True
 
     def __del__(self):
@@ -46,9 +46,9 @@ class subprocessWrapper:
         if verbose:
             print("Process launched: {}".format(' '.join(self.args)))
         self.process = subprocess.run(self.args, \
-                                       stdout=self.stdout, \
-                                       stderr=self.stderr, errors=True, \
-                                       check=True, shell=self.runInBackground)
+                                        stdout=self.stdout, \
+                                        stderr=self.stderr, errors=True, \
+                                        check=True, shell=self.runInBackground)
         self.ready = False
 
     def runOnTop(self):
@@ -57,7 +57,7 @@ class subprocessWrapper:
         self.process = subprocess.run(self.args)
         self.ready = False
 
-    def autorun(self):
+    def runOnBg(self):
         if self.trigger is None:
             if verbose:
                 print("Trigger undefined. Running once and waiting for completion.")
@@ -93,13 +93,13 @@ class subprocessWrapper:
 def main(mainExecutable, sideExecutables):
     threads = []
     for exe in sideExecutables:
-        threads.append(threading.Thread(target=exe.autorun))
+        threads.append(threading.Thread(target=exe.runOnBg))
         threads[-1].start()
     
     if verbose:
         if mainExecutable.runInBackground == True:
             mainExecutable.switchRunInBackground()
-        mainExecutable.autorun()
+        mainExecutable.runOnBg()
     else:
         mainExecutable.runOnTop()
 
@@ -124,7 +124,7 @@ def makeWrapper(x, trigger = None, customName = None):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='KMA is a command wrapper able to maintain satellite processes as long as the main process is alive.', formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description='satellite is a command wrapper able to maintain satellite processes as long as the main process is alive.', formatter_class=RawTextHelpFormatter)
 
     parser.add_argument("-s", "--satellites", type=str, help="Provide comma separed launch commands for the satellite processes as strings.\n\Optional: add polling interval in seconds after ' @ '.\n\n\te.g. -s ls <-- run ls every second\n\te.g. -s 'ls @ 5,pwd' <-- run ls every 5 seconds and pwd every second\n\te.g. -s 'ls @ 5, pwd @ 10' <-- run ls every 5 seconds and pwd every 10 seconds\n\n")
 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-v", "--verbose", action='store_true', help="Enable verbose output.\n\n")
 
-    parser.add_argument("main", type=str, help="Provide the main process launch command as a string (surrounded by '').\n\n\te.g. python KMA.py sleep 10\n\te.g. python KMA.py ./test_script.sh\n\n")
+    parser.add_argument("main", type=str, help="Provide the main process launch command as a string (surrounded by '').\n\n\te.g. python satellite.py sleep 10\n\te.g. python satellite.py ./test_script.sh\n\n")
 
     args = parser.parse_args()
 
