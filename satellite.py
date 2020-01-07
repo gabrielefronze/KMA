@@ -19,11 +19,19 @@ def setLogDir():
 verbose=False
 
 class subprocessWrapper:
-    def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName = None):
+    def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName=None, waitingInterval=1, waitingIntervalFunc=None):
         self.args = executableString.split()
         self.process = None
         self.trigger = trigger
         self.pollingInterval = pollingInterval
+
+        if waitingIntervalFunc is None:
+            def func():
+                return 1
+            self.waitingInterval = func
+        else:
+            self.waitingInterval = waitingIntervalFunc
+
         self.runInBackground = runInBackground
         self.thread = None
         self.calls = 0
@@ -76,7 +84,7 @@ class subprocessWrapper:
                     print("Running call {} and waiting {} seconds.".format(self.calls, self.pollingInterval))
                 self.run()
                 for seconds in range(0,self.pollingInterval):
-                    time.sleep(1)
+                    time.sleep(self.waitingInterval())
                     if not self.trigger():
                         break
             if verbose:
