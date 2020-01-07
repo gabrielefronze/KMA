@@ -3,4 +3,4 @@ Satel.Lite is a python script wrapper to automatically run other executables whi
 
 Python >=3 is required to run this software.
 
-To get information about how to run please run `python KMA.py -h`.
+To get information about how to run please run `python satellite.py -h`.
