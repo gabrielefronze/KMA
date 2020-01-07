@@ -116,9 +116,9 @@ def makeWrapper(x, trigger = None, waiter = None, customName = None):
         y=x.split(' @ ')
         print("Command '{}' to be run every {} seconds.".format(y[0],y[1]))
         if customName:
-            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, customName = customName, waiter)
+            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, customName = customName, waiter=waiter)
         else:
-            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, waiter)
+            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, waiter=waiter)
     else:
         if trigger:
             print("Command '{}' to be run every second.".format(x))
@@ -126,9 +126,9 @@ def makeWrapper(x, trigger = None, waiter = None, customName = None):
             print("Command '{}' to be run as main process.".format(x))
 
         if customName:
-            return subprocessWrapper(x, trigger, 1, True, customName = customName, waiter)
+            return subprocessWrapper(x, trigger, 1, True, customName = customName, waiter=waiter)
         else:
-            return subprocessWrapper(x, trigger, 1, True, waiter)
+            return subprocessWrapper(x, trigger, 1, True, waiter=waiter)
 
 
 if __name__ == "__main__":
