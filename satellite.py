@@ -21,19 +21,11 @@ verbose=False
 mainThreadEnded = threading.Event()
 
 class subprocessWrapper:
-    def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName=None, waiter=None):
+    def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName=None):
         self.args = executableString.split()
         self.process = None
         self.trigger = trigger
         self.pollingInterval = pollingInterval
-
-        if waiter is None:
-            def func():
-                return 1
-            self.waitingInterval = func
-        else:
-            self.waitingInterval = waiter
-
         self.runInBackground = runInBackground
         self.thread = None
         self.calls = 0
@@ -114,14 +106,14 @@ def main(mainExecutable, sideExecutables):
 
     
 
-def makeWrapper(x, trigger = None, waiter = None, customName = None):
+def makeWrapper(x, trigger = None, customName = None):
     if ' @ ' in x:
         y=x.split(' @ ')
         print("Command '{}' to be run every {} seconds.".format(y[0],y[1]))
         if customName:
-            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, customName = customName, waiter=waiter)
+            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, customName = customName)
         else:
-            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, waiter=waiter)
+            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True)
     else:
         if trigger:
             print("Command '{}' to be run every second.".format(x))
@@ -129,9 +121,9 @@ def makeWrapper(x, trigger = None, waiter = None, customName = None):
             print("Command '{}' to be run as main process.".format(x))
 
         if customName:
-            return subprocessWrapper(x, trigger, 1, True, customName = customName, waiter=waiter)
+            return subprocessWrapper(x, trigger, 1, True, customName = customName)
         else:
-            return subprocessWrapper(x, trigger, 1, True, waiter=waiter)
+            return subprocessWrapper(x, trigger, 1, True)
 
 
 if __name__ == "__main__":
