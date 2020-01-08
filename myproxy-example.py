@@ -3,7 +3,7 @@
 import argparse
 import satellite
 
-satellite.logDir="./"
+satellite.logDir="./testlog/"
 satellite.setLogDir()
 
 if __name__ == "__main__":

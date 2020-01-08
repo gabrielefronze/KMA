@@ -15,6 +15,8 @@ def setLogDir():
         os.stat(logDir)
     except:
         os.makedirs(logDir)
+def getLogDir():
+    return logDir
 
 verbose=False
 
@@ -30,11 +32,11 @@ class subprocessWrapper:
         self.thread = None
         self.calls = 0
         if not customName:
-            self.stdout = open(logDir+self.args[0]+".satellite.log", "w")
-            self.stderr = open(logDir+self.args[0]+".satellite.err", "w")
+            self.stdout = open(getLogDir()+self.args[0]+".satellite.log", "w")
+            self.stderr = open(getLogDir()+self.args[0]+".satellite.err", "w")
         else:
-            self.stdout = open(logDir+customName+".satellite.log", "w")
-            self.stderr = open(logDir+customName+".satellite.err", "w")
+            self.stdout = open(getLogDir()+customName+".satellite.log", "w")
+            self.stderr = open(getLogDir()+customName+".satellite.err", "w")
         self.ready = True
 
     def __del__(self):
