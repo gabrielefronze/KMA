@@ -18,6 +18,8 @@ def setLogDir():
 
 verbose=False
 
+mainThreadEnded = threading.Event()
+
 class subprocessWrapper:
     def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName=None, waiter=None):
         self.args = executableString.split()
@@ -83,10 +85,7 @@ class subprocessWrapper:
                 if verbose:
                     print("Running call {} and waiting {} seconds.".format(self.calls, self.pollingInterval))
                 self.run()
-                for seconds in range(0,self.pollingInterval):
-                    time.sleep(self.waitingInterval())
-                    if not self.trigger():
-                        break
+                mainThreadEnded.wait(timeout=self.pollingInterval)
             if verbose:
                 print("Main process ended, stopping.")
             self.ready = False
@@ -110,6 +109,10 @@ def main(mainExecutable, sideExecutables):
         mainExecutable.runOnBg()
     else:
         mainExecutable.runOnTop()
+
+    mainThreadEnded.set()
+
+    
 
 def makeWrapper(x, trigger = None, waiter = None, customName = None):
     if ' @ ' in x:
