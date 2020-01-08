@@ -3,8 +3,9 @@
 import argparse
 import satellite
 
-satellite.logDir="./testlog/"
-satellite.setLogDir()
+print("1: "+satellite.logDir)
+satellite.setLogDir("./testlog")
+print("2: "+satellite.logDir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='This is a process wrapper wich adds a myproxy retrieval satellite by default.')

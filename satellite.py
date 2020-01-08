@@ -10,7 +10,11 @@ from typing import List
 from argparse import RawTextHelpFormatter
 
 logDir="./var/log/satellite/"
-def setLogDir():
+def setLogDir(path):
+    if not path[-1]=='/':
+        path = path + '/'
+    global logDir
+    logDir = path
     try:
         os.stat(logDir)
     except:
