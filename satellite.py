@@ -151,7 +151,7 @@ if __name__ == "__main__":
     if args.verbose is not None:
         verbose=args.verbose
 
-    setLogDir()
+    setLogDir('./')
 
     mainExe = subprocessWrapper(args.main)
 
