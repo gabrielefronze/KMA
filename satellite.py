@@ -48,8 +48,9 @@ class subprocessWrapper:
         self.ready = True
 
     def __del__(self):
-        self.stderr.close()
-        self.stdout.close()
+        if self.runInBackground:
+            self.stderr.close()
+            self.stdout.close()
 
     def switchRunInBackground(self):
         self.runInBackground = not self.runInBackground
