@@ -35,12 +35,16 @@ class subprocessWrapper:
         self.runInBackground = runInBackground
         self.thread = None
         self.calls = 0
-        if not customName:
-            self.stdout = open(getLogDir()+self.args[0].replace('/','_')+".satellite.log", "w")
-            self.stderr = open(getLogDir()+self.args[0].replace('/','_')+".satellite.err", "w")
+        if self.runInBackground:
+            if not customName:
+                self.stdout = open(getLogDir()+self.args[0].replace('/','_')+".satellite.log", "w")
+                self.stderr = open(getLogDir()+self.args[0].replace('/','_')+".satellite.err", "w")
+            else:
+                self.stdout = open(getLogDir()+customName+".satellite.log", "w")
+                self.stderr = open(getLogDir()+customName+".satellite.err", "w")
         else:
-            self.stdout = open(getLogDir()+customName+".satellite.log", "w")
-            self.stderr = open(getLogDir()+customName+".satellite.err", "w")
+            self.stdout = sys.stdout
+            self.stderr = sys.stderr
         self.ready = True
 
     def __del__(self):
