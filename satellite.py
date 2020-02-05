@@ -60,8 +60,10 @@ class subprocessWrapper:
             print("Process launched: {}".format(' '.join(self.args)))
         self.process = subprocess.run(self.args, \
                                         stdout=self.stdout, \
-                                        stderr=self.stderr, errors=True, \
-                                        check=True, shell=self.runInBackground)
+                                        stderr=self.stderr, \
+                                        errors=True, \
+                                        check=True, \
+                                        shell=True)
         self.ready = False
 
     def runOnTop(self):
