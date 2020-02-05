@@ -28,7 +28,7 @@ mainThreadEnded = threading.Event()
 
 class subprocessWrapper:
     def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName=None):
-        self.args = executableString.split()
+        self.args = executableString
         self.process = None
         self.trigger = trigger
         self.pollingInterval = pollingInterval
@@ -69,7 +69,7 @@ class subprocessWrapper:
     def runOnTop(self):
         if verbose:
             print("Launching main process.")
-        self.process = subprocess.run(self.args)
+        self.process = subprocess.run(self.args, errors=True, check=True, shell=True)
         self.ready = False
 
     def runOnBg(self):
