@@ -58,7 +58,7 @@ class subprocessWrapper:
 
     def run(self):
         if verbose:
-            print("Process launched: {}".format(' '.join(self.args)))
+            print("Process launched: {}".format(self.args))
         self.process = subprocess.run(self.args, \
                                         stdout=self.stdout, \
                                         stderr=self.stderr, \
