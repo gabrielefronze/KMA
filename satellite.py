@@ -75,6 +75,8 @@ class subprocessWrapper:
 
     def runOnBg(self):
         if self.calls == 0:
+            if verbose:
+                print("+++ Waiting {} seconds before first call +++".format(self.firstDelay))
             self.stdout.write("+++ Waiting {} seconds before first call +++".format(self.firstDelay))
             self.stdout.flush()
             mainThreadEnded.wait(timeout=self.firstDelay)
