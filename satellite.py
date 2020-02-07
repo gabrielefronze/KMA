@@ -27,11 +27,12 @@ verbose=False
 mainThreadEnded = threading.Event()
 
 class subprocessWrapper:
-    def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName=None):
+    def __init__(self, executableString, trigger=None, pollingInterval=1, runInBackground=False, customName=None, firstDelay=0):
         self.args = executableString
         self.process = None
         self.trigger = trigger
         self.pollingInterval = pollingInterval
+        self.firstDelay = firstDelay
         self.runInBackground = runInBackground
         self.thread = None
         self.calls = 0
@@ -73,6 +74,10 @@ class subprocessWrapper:
         self.ready = False
 
     def runOnBg(self):
+        if self.calls == 0:
+            self.stdout.write("+++ Waiting {} seconds before first call +++".format(self.firstDelay))
+            self.stdout.flush()
+            mainThreadEnded.wait(timeout=self.firstDelay)
         if self.trigger is None:
             if verbose:
                 print("Trigger undefined. Running once and waiting for completion.")
@@ -119,14 +124,14 @@ def main(mainExecutable, sideExecutables):
 
     
 
-def makeWrapper(x, trigger = None, customName = None):
+def makeWrapper(x, trigger = None, customName = None, firstDelay = 0):
     if ' @ ' in x:
         y=x.split(' @ ')
         print("Command '{}' to be run every {} seconds.".format(y[0],y[1]))
         if customName:
-            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, customName = customName)
+            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, customName = customName, firstDelay = firstDelay)
         else:
-            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True)
+            return subprocessWrapper(y[0].lstrip().rstrip(), trigger, int(y[1].lstrip().rstrip()), True, firstDelay = firstDelay)
     else:
         if trigger:
             print("Command '{}' to be run every second.".format(x))
@@ -134,9 +139,9 @@ def makeWrapper(x, trigger = None, customName = None):
             print("Command '{}' to be run as main process.".format(x))
 
         if customName:
-            return subprocessWrapper(x, trigger, 1, True, customName = customName)
+            return subprocessWrapper(x, trigger, 1, True, customName = customName, firstDelay = firstDelay)
         else:
-            return subprocessWrapper(x, trigger, 1, True)
+            return subprocessWrapper(x, trigger, 1, True, firstDelay = firstDelay)
 
 
 if __name__ == "__main__":
